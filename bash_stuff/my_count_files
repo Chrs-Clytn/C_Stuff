@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ls -laq . | ls -lAq ./* | wc -l
