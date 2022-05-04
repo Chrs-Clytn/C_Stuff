@@ -19,17 +19,21 @@ void sortList(node* head)
 {
     node *start = NULL, *temp = NULL;
     char* tempvar;
+    char* tempVar1;
     start = head;
     while(start != NULL)
     {
         temp=start; 
-        while (temp->time !=NULL)//travel till the second last element 
+        while (temp->next !=NULL)//travel till the second last element 
         {
            if(temp->time > temp->next->time)// compare the data of the nodes 
             {
               tempvar = temp->time;
+              tempVar1 = temp->name;
               temp->time = temp->next->time;// swap the data
+              tempVar1 = temp->next->name;
               temp->next->time = tempvar;
+              temp->next->name = tempVar1;
             }
          temp = temp->next;    // move to the next element 
         }
@@ -39,29 +43,30 @@ void sortList(node* head)
 
 node *append(node *head, char* dname, char* dtime)
 {
+    printf("debug 2\n");
     if (head->name == NULL)
     {
         head->name = dname;
         head->time = dtime;
         head->next = NULL;
         return head;
-    }
-
+    } 
     node *current = head;
     while (current->next != NULL)
         current = current->next;
-
+    printf("debug 3\n");
     node *new = (node *)malloc(sizeof(node));
-    new->next = NULL;
     new->name = dname;
     new->time = dtime;
+    new->next = NULL;
     current->next = new;
-
+    printf("debug 4\n");
     return head;
 };
 
 void printerFunction(node* head, int number)
 {
+    //printf("debug 6\n");
     if(number == 2)
     {
         while (head != NULL)

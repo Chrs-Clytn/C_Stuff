@@ -8,8 +8,7 @@
 
 //whats left, 
 //figure out how to sort the list
-//figure out segfault
-//also i broke it...
+//figure out memory leak
 
 int dirFunction(char* searchTerm, int number)
 {
@@ -17,6 +16,7 @@ int dirFunction(char* searchTerm, int number)
     struct dirent *entry;
     struct stat filestat;
     node *head = (node *)malloc(sizeof(node));
+    head->next = NULL;
     folder = opendir(searchTerm);
 
     if(folder == NULL)
@@ -26,20 +26,21 @@ int dirFunction(char* searchTerm, int number)
     }
 
     while( (entry=readdir(folder)) )
-    {
+    {   
+        printf("debug 1\n");
         stat(entry->d_name,&filestat);
         char* ptr_time = ctime(&filestat.st_mtime);
         append(head, entry->d_name, ptr_time);
     }
     closedir(folder);
+    printf("debug 5\n");
     printerFunction(head, number);
-    free(head);
     return 0;
 }
 
 int main(int ac, char **av)
 {
-    char *searchTerm = malloc(sizeof(char*) * 4);
+    char *searchTerm; // = malloc(sizeof(char*) * 4);
     int count = 0;
     if (ac >= 3)
     {
@@ -57,6 +58,7 @@ int main(int ac, char **av)
     } 
     else
         searchTerm = av[1];
+    //printf("debug 0\n");
     dirFunction(searchTerm, count);
     //free(searchTerm);
 }
