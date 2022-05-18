@@ -8,10 +8,6 @@
 #include <string.h>
 #include "additional.h"
 
-// whats left, 
-// figure out time 
-// 
-
 int dirFunction(char* searchTerm, arg_t* args) //directory function, opens and reads directory, stats the information required.
 {
     DIR *folder;

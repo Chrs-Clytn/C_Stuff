@@ -13,51 +13,62 @@ int my_strcmp(char* param_1, char* param_2) //my string compare function
     }
     if(*param_1 == *param_2)
         return 0; 
+    else if(*param_1 < *param_2)
+        return -1;
     else
         return 1;
 }
 
 void sortAlphaNum(node* head)     //sorts my list alhpanumerically by name
 {
-    node *start = NULL;
+    node *start = NULL, *current = head;
     char* tempVar;
     time_t tempVar1;
     start = head;
-    while(start->next != NULL) //travel till the second last element
+    while(current != NULL)
     {
-        if(strcmp(start->name, start->next->name) <= 0)  // compare the data of the nodes 
-            start = start->next;
-        else 
+        start = head;
+        while(start->next != NULL) //travel till the second last element
         {
-            tempVar = start->next->name;// swap the data
-            tempVar1 = start->next->time;
-            start->next->name = start->name;
-            start->next->time = start->time;
-            start->name = tempVar;
-            start->time = tempVar1;
+            if(my_strcmp(start->name, start->next->name) <= 0)  // compare the data of the nodes 
+                start = start->next;
+            else 
+            {
+                tempVar = start->next->name;// swap the data
+                tempVar1 = start->next->time;
+                start->next->name = start->name;
+                start->next->time = start->time;
+                start->name = tempVar;
+                start->time = tempVar1;
+            }
         }
-    start = start->next; // move to the next element 
+        current = current->next;
     }
 }
 
 void sortListTime(node* head) //This function will sort the linked list by time.
 {
-    node *temp = NULL; // *start = NULL, 
+    node *temp = NULL, *start = head;
     time_t tempvar;
     char* tempVar1;
     temp = head;
-    while (temp->next !=NULL)//travel till the second last element 
+    while(start != NULL)
     {
-        if(temp->time > temp->next->time)// compare the data of the nodes 
+        temp = head;
+        while (temp->next !=NULL)//travel till the second last element 
         {
-            tempvar = temp->time;// swap the data
-            tempVar1 = temp->name;
-            temp->time = temp->next->time;
-            temp->name = temp->next->name;
-            temp->next->time = tempvar;
-            temp->next->name = tempVar1;
+            if(temp->time < temp->next->time)// compare the data of the nodes 
+            {
+                tempvar = temp->time;// swap the data
+                tempVar1 = temp->name;
+                temp->time = temp->next->time;
+                temp->name = temp->next->name;
+                temp->next->time = tempvar;
+                temp->next->name = tempVar1;
+            }
+        temp = temp->next;    // move to the next element 
         }
-    temp = temp->next;    // move to the next element 
+        start = start->next;
     }
 }
 
@@ -80,39 +91,43 @@ node *append(node *head, char* dname, time_t dtime) //this appends to my linked 
     return head;
 };
 
-void listPrinter(node* head) //generic list printer
+void listPrinter(node* head, arg_t* args) //generic list printer
 {
     while (head != NULL)
     {
-        printf("%s  ", head->name);
-        printf("%ld", head->time);
-        printf("\n");
-        head = head->next;
+        if(args->a == false && head->name[0] == 46)
+            head = head->next;
+        else
+        {
+            printf("%s  ", head->name);
+            //printf("%ld", head->time);
+            //printf("\n");
+            head = head->next;
+        }
     }
-    //printf("\n");
+    printf("\n");
 }
 
 void printerFunction(node* head, arg_t* args) //printing function to sort through the arguments
 {
-    sortAlphaNum(head);
-    if(args->a == true && args->b == false)
-        listPrinter(head);
-    if(args->a == false && args->b == false)
+    if(args->a == true && args->b == false) // ls -a
     {
-        for(int i = 0; i < 2; i++)
-            head = head->next;
-        listPrinter(head);
+        sortAlphaNum(head);
+        listPrinter(head, args);
     }
-    if(args->a == false && args->b == true)
+    if(args->a == false && args->b == false) // ls
     {
-        for(int i = 0; i < 2; i++)
-            head = head->next;
-        sortListTime(head);
-        listPrinter(head);
+        sortAlphaNum(head);
+        listPrinter(head, args);
     }
-    if(args->a == true && args->b == true)
+    if(args->a == false && args->b == true) // ls -t
     {
         sortListTime(head);
-        listPrinter(head);
+        listPrinter(head, args);
+    }
+    if(args->a == true && args->b == true) // ls -a -t
+    {
+        sortListTime(head);
+        listPrinter(head, args);
     }
 }
