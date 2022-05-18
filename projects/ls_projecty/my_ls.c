@@ -4,61 +4,58 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <time.h>
+#include <stdbool.h>
+#include <string.h>
 #include "additional.h"
 
-//whats left, 
-//figure out how to sort the list
-//figure out memory leak
+// whats left, 
+// figure out time 
+// 
 
-int dirFunction(char* searchTerm, int number)
+int dirFunction(char* searchTerm, arg_t* args) //directory function, opens and reads directory, stats the information required.
 {
     DIR *folder;
     struct dirent *entry;
     struct stat filestat;
     node *head = (node *)malloc(sizeof(node));
+    head->name = NULL;
+    //head->time = NULL;
     head->next = NULL;
     folder = opendir(searchTerm);
-
     if(folder == NULL)
     {
-        printf("Unable to read directory");
+        printf("Unable to read directory\n");
         return(1);
     }
-
     while( (entry=readdir(folder)) )
     {   
-        printf("debug 1\n");
-        stat(entry->d_name,&filestat);
-        char* ptr_time = ctime(&filestat.st_mtime);
-        append(head, entry->d_name, ptr_time);
-    }
+        char test[50];
+        strcpy(test, searchTerm);
+        strcat(test, "/");
+        lstat(strcat(test, entry->d_name), &filestat);
+        append(head, entry->d_name, filestat.st_mtime);
+    }  
+    printerFunction(head, args);
     closedir(folder);
-    printf("debug 5\n");
-    printerFunction(head, number);
+    free(head);
     return 0;
 }
 
-int main(int ac, char **av)
+int main(int ac, char **av) //main function takes the arguments and parses them to either search term or arg struct
 {
-    char *searchTerm; // = malloc(sizeof(char*) * 4);
-    int count = 0;
-    if (ac >= 3)
+    char *searchTerm = ".";
+    arg_t* args = (arg_t *)malloc(sizeof(arg_t));
+    args->a = false;
+    args->b = false;
+    for(int j = 0; j < ac; j++)
     {
-        for(int j = 0; j < ac; j++)
-        {
-           if(my_strcmp(av[j], "-a") == 0)
-                count = count + 2;
-           if(my_strcmp(av[j], "-t") == 0)
-               count = count + 5;
-        }
-        if(ac == 3)
-            searchTerm = av[2];
-        if(ac == 4)
-            searchTerm = av[3];
-    } 
-    else
-        searchTerm = av[1];
-    //printf("debug 0\n");
-    dirFunction(searchTerm, count);
-    //free(searchTerm);
+        if(my_strcmp(av[j], "-a") == 0)
+            args->a = true;
+        if(my_strcmp(av[j], "-t") == 0)
+            args->b = true;
+        if((my_strcmp(av[j], "-t") != 0) && (my_strcmp(av[j], "-a") != 0) && (my_strcmp(av[j], "./my_ls") != 0))
+            searchTerm = av[j];
+    }
+    //printf("searchterm = %s, ac = %i \n", searchTerm, ac);
+    dirFunction(searchTerm, args);
 }

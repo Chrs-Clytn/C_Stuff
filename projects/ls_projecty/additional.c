@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
 #include "additional.h"
 
-int my_strcmp(char* param_1, char* param_2)
+int my_strcmp(char* param_1, char* param_2) //my string compare function
 {
     while(( *param_1 != '\0' && *param_2 != '\0' ) && *param_1 == *param_2)
     {
@@ -15,35 +17,52 @@ int my_strcmp(char* param_1, char* param_2)
         return 1;
 }
 
-void sortList(node* head)
+void sortAlphaNum(node* head)     //sorts my list alhpanumerically by name
 {
-    node *start = NULL, *temp = NULL;
-    char* tempvar;
-    char* tempVar1;
+    node *start = NULL;
+    char* tempVar;
+    time_t tempVar1;
     start = head;
-    while(start != NULL)
+    while(start->next != NULL) //travel till the second last element
     {
-        temp=start; 
-        while (temp->next !=NULL)//travel till the second last element 
+        if(strcmp(start->name, start->next->name) <= 0)  // compare the data of the nodes 
+            start = start->next;
+        else 
         {
-           if(temp->time > temp->next->time)// compare the data of the nodes 
-            {
-              tempvar = temp->time;
-              tempVar1 = temp->name;
-              temp->time = temp->next->time;// swap the data
-              tempVar1 = temp->next->name;
-              temp->next->time = tempvar;
-              temp->next->name = tempVar1;
-            }
-         temp = temp->next;    // move to the next element 
+            tempVar = start->next->name;// swap the data
+            tempVar1 = start->next->time;
+            start->next->name = start->name;
+            start->next->time = start->time;
+            start->name = tempVar;
+            start->time = tempVar1;
         }
-        start = start->next;    // move to the next node
+    start = start->next; // move to the next element 
     }
 }
 
-node *append(node *head, char* dname, char* dtime)
+void sortListTime(node* head) //This function will sort the linked list by time.
 {
-    printf("debug 2\n");
+    node *temp = NULL; // *start = NULL, 
+    time_t tempvar;
+    char* tempVar1;
+    temp = head;
+    while (temp->next !=NULL)//travel till the second last element 
+    {
+        if(temp->time > temp->next->time)// compare the data of the nodes 
+        {
+            tempvar = temp->time;// swap the data
+            tempVar1 = temp->name;
+            temp->time = temp->next->time;
+            temp->name = temp->next->name;
+            temp->next->time = tempvar;
+            temp->next->name = tempVar1;
+        }
+    temp = temp->next;    // move to the next element 
+    }
+}
+
+node *append(node *head, char* dname, time_t dtime) //this appends to my linked list
+{
     if (head->name == NULL)
     {
         head->name = dname;
@@ -51,55 +70,49 @@ node *append(node *head, char* dname, char* dtime)
         head->next = NULL;
         return head;
     } 
-    node *current = head;
-    while (current->next != NULL)
-        current = current->next;
-    printf("debug 3\n");
+    while (head->next != NULL)
+        head = head->next;
     node *new = (node *)malloc(sizeof(node));
     new->name = dname;
     new->time = dtime;
     new->next = NULL;
-    current->next = new;
-    printf("debug 4\n");
+    head->next = new;
     return head;
 };
 
-void printerFunction(node* head, int number)
+void listPrinter(node* head) //generic list printer
 {
-    //printf("debug 6\n");
-    if(number == 2)
+    while (head != NULL)
     {
-        while (head != NULL)
-        {
-            printf("%s-", head->name);
-            printf("%s-", head->time);
-            printf("\n");
-            head = head->next;
-        }
+        printf("%s  ", head->name);
+        printf("%ld", head->time);
+        printf("\n");
+        head = head->next;
     }
-    if(number == 0)
+    //printf("\n");
+}
+
+void printerFunction(node* head, arg_t* args) //printing function to sort through the arguments
+{
+    sortAlphaNum(head);
+    if(args->a == true && args->b == false)
+        listPrinter(head);
+    if(args->a == false && args->b == false)
     {
         for(int i = 0; i < 2; i++)
             head = head->next;
-        while (head != NULL)
-        {
-            printf("%s-", head->name);
-            printf("%s-", head->time);
-            printf("\n");
-            head = head->next;
-        }
+        listPrinter(head);
     }
-    if(number == 5)
+    if(args->a == false && args->b == true)
     {
         for(int i = 0; i < 2; i++)
             head = head->next;
-        sortList(head);
-        while (head != NULL)
-        {
-            printf("%s-", head->name);
-            printf("%s-", head->time);
-            printf("\n");
-            head = head->next;
-        }
+        sortListTime(head);
+        listPrinter(head);
+    }
+    if(args->a == true && args->b == true)
+    {
+        sortListTime(head);
+        listPrinter(head);
     }
 }
