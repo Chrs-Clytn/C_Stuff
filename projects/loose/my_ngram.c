@@ -12,7 +12,6 @@ void fill_array(int *array, char *str){
 void print_array(int *array, int array_size){
     for(int i = 0; i < array_size; i++) 
         if(array[i] > 0) printf("%c:%d\n", i, array[i]);
-
     return;
 }
 
