@@ -52,9 +52,8 @@ typedef struct s_archive
     char* archive_name;
 } archive_t;
 
-int my_strcmp(char* param_1, char* param_2);
-char *int_to_str(unsigned int num, int base);
-void listPrinter(target_t* head, arg_t* args, archive_t* archive);
-bool parse_function(char* av, arg_t* args, bool* argument_parse);
+// int my_strcmp(char* param_1, char* param_2);
+// void listPrinter(target_t* head, arg_t* args, archive_t* archive);
+// bool parse_function(char* av, arg_t* args, bool* argument_parse);
 
 #endif

@@ -5,18 +5,10 @@
 int main(int ac, char **av)
 {
     arg_t* args = malloc(sizeof(arg_t));
-    args->c = false;
-    args->r = false;
-    args->t = false;
-    args->u = false;
-    args->x = false;
-    args->f = false;
     archive_t* archive = malloc(sizeof(archive_t));
-    archive->archive_name = NULL;
     target_t* target = malloc(sizeof(target_t));
-    header_t *header_file = malloc(sizeof(header_t));
+    args->c = false, args->r = false, args->t = false, args->u = false, args->x = false, args->f = false, archive->archive_name = NULL;
     bool parse_args = true;
-    //printf("ac = %d\n", ac);
     for(int i = 1; i < ac; i++)
     {
         if(parse_args)
@@ -36,6 +28,6 @@ int main(int ac, char **av)
         }
     }
     //listPrinter(head, args, archive);
-    make_header(target, header_file);
+    header_t* header_file = make_header(target);
     tar_function(target, args, archive, header_file);   
 }

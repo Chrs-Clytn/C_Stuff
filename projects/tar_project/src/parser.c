@@ -4,7 +4,7 @@
 void addArchiveName(char* av, archive_t* archive)
 {
     archive->archive_name = av; //malloc(sizeof(char) * strlen(av) + 1 );
-    archive->archive_file = av;
+    //archive->archive_file = av;
     //strcpy(archive->archive_name, av);
 }
 
