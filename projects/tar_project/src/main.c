@@ -13,7 +13,8 @@ int main(int ac, char **av)
     args->f = false;
     archive_t* archive = malloc(sizeof(archive_t));
     archive->archive_name = NULL;
-    target_t* head = malloc(sizeof(target_t));
+    target_t* target = malloc(sizeof(target_t));
+    header_t *header_file = malloc(sizeof(header_t));
     bool parse_args = true;
     //printf("ac = %d\n", ac);
     for(int i = 1; i < ac; i++)
@@ -31,10 +32,10 @@ int main(int ac, char **av)
         else
         {
             //printf("add file,  av = %d\n", i);
-            addFile(av[i], head);
+            addFile(av[i], target);
         }
     }
     //listPrinter(head, args, archive);
-    header_t* header = make_header(head);
-    tar_function(head, args, archive, header);   
+    make_header(target, header_file);
+    tar_function(target, args, archive, header_file);   
 }

@@ -3,8 +3,9 @@
 
 void addArchiveName(char* av, archive_t* archive)
 {
-    archive->archive_name = malloc(sizeof(char) * strlen(av) + 1 );
-    strcpy(archive->archive_name, av);
+    archive->archive_name = av; //malloc(sizeof(char) * strlen(av) + 1 );
+    archive->archive_file = av;
+    //strcpy(archive->archive_name, av);
 }
 
 target_t* addFile(char* av, target_t* head)
