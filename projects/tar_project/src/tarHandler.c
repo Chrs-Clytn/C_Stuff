@@ -47,7 +47,8 @@ char* my_itoa_base(int num, char* str, int base)
     }
     if (isNegative)
         str[i++] = '-';
-    str[i] = '\0';
+    str[i] = ' ';
+    str[i+1] = '\0';
     my_reverse(str, i);
     return str;
 }
@@ -70,6 +71,7 @@ void fill_header(target_t *head, header_t **current)
     //current->name = head->file_name;
     (*current)->name = head->file_name;
     (*current)->mode = mode;
+    (*current)->mode[0] = '0';
     (*current)->uid = uid;
     (*current)->gid = gid;
     (*current)->size = size;
@@ -109,39 +111,69 @@ header_t *make_header(target_t *head)
     //print_list(header_file);
     return header_file;
 }
+void append_archive(archive_t* archive, target_t* target, header_t* header_file)
+{
+    char *buffer = malloc(BLOCKSIZE);
+    buffer[BLOCKSIZE - 1] = '\0';
+    memset(buffer, '\0', BLOCKSIZE - 1); 
+    int fout = open(archive->archive_name, O_RDWR, O_CREAT); // open the file;
+            while (target != NULL)
+        {
+            int fd = open(target->file_name, O_RDONLY);
+            read(fd, buffer, sizeof(buffer)); // read file to buffer
+            // read(fout, header_file->name, sizeof(header_t));
+            write(fout, header_file->name, strlen(header_file->name));
+            write(fout, header_file->mode, strlen(header_file->mode));
+            write(fout, header_file->uid, strlen(header_file->uid));
+            write(fout, header_file->gid, strlen(header_file->gid));
+            write(fout, header_file->size, strlen(header_file->size));
+            write(fout, header_file->mtime, strlen(header_file->mtime));
+            int readBytes = 0;
+            while ((readBytes = read(fd, buffer, BLOCKSIZE)) > 0)
+                write(fout, buffer, BLOCKSIZE);
+            close(fd);
+            target = target->next;
+            header_file = header_file->next;
+            //print_list(header_file);
+        }
+        memset(buffer, 0, BLOCKSIZE);   
+        write(fout, buffer, BLOCKSIZE);
+        write(fout, buffer, BLOCKSIZE);
+        close(fout);
+}
 
 int tar_function(target_t* target, arg_t* args, archive_t* archive, header_t* header_file) //tar function to write to file out
 {
-    char buffer[4096];
+    char *buffer = malloc(BLOCKSIZE);
+    buffer[BLOCKSIZE - 1] = '\0';
+    memset(buffer, '\0', BLOCKSIZE - 1); 
+    //char *buff = malloc(BLOCKSIZE);
+    //char buffer[512];
     FILE *output_file = fopen(archive->archive_name, "w");
     int fout = open(archive->archive_name, O_RDWR, O_CREAT); // open the file;
     // printf("size of buffer =  %ld\n", sizeof(buffer));
     if (args->c == true)
     {
-        while (target != NULL)
-        {
-            int fd = open(target->file_name, O_RDONLY);
-            read(fd, buffer, sizeof(buffer)); // read file to buffer
-            write(fout, &header_file->name, sizeof(header_t));
-            write(fout, &header_file->mode, sizeof(header_t));
-            close(fout);
-            //write(fout, buffer, (sizeof(buffer) + 1)); // write buffer to fileout
-            close(fd);
-            target = target->next;
-            read(fout, header_file->name, sizeof(header_t));
-            close(fout);
-            //write(fout, header_file->name, sizeof(header_t));
-            //write(1, header_file->name, sizeof(header_t));
-            
-            //print_list(header_file);
-            // write(1, buffer, (sizeof(buffer) + 1));
-        }
+        append_archive(archive, target, header_file);
     }
-    // if (args->r == true)
-    // {
-    // }
-    //write(1, header_file, sizeof(header_t));
-    //printf("buffer = %s\n", buffer);
-    //printf("file out %s\n", fout);
+    if (args->r == true || args->u == true)
+    {
+        append_archive(archive, target, header_file);
+    }
+    if (args->t == true)
+    {
+        append_archive(archive, target, header_file);
+        write(1, archive->archive_name, sizeof(BLOCKSIZE) * sizeof(header_t));
+    }
+    if (args->x == true)
+    {
+        // extract the data
+    }
+
     return 0;
+}
+
+void appendItemToArchive()
+{
+
 }
