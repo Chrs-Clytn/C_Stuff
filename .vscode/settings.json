@@ -1,6 +1,9 @@
 {
     "files.associations": {
         "sstream": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "string.h": "c",
+        "additional.h": "c",
+        "stdbool.h": "c"
     }
 }

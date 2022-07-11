@@ -16,7 +16,7 @@ int main(int ac, char **av)
             //printf("parse function, av = %d\n", i);
             parse_function(av[i], args, &parse_args);
         }
-        else if(archive->archive_name == NULL)
+        else if(archive->archive_name == NULL && args->f == true)
         {   
             //printf("archive function, av = %d\n", i);
             addArchiveName(av[i], archive);

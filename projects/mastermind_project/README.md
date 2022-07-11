@@ -1,9 +1,14 @@
+## Task
+
+## Description
 This is the famous mastermind game!
 I have created it to emulate the game, you will need to guess the order of 4 numbers. These numbers will represent the 8 colours from the game.
 
-In order to play, use the makefile.
+## Installation
+In order to play, use the makefile. Simply run make in the terminal.
 
-once mastermind is created, you can add additional arguments:
+## Usage
+Once mastermind is created, you can add additional arguments:
 
 -c (Choose)  Use this flag if you want your next argument to be the number you try to guess!
 
@@ -25,3 +30,6 @@ if using -ct enter your secret code followed by the number of tries.
 e.g: mastermind -ct 1234 3
 
 Good Luck masterminders!
+
+## Contributors
+Chris Clayton

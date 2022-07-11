@@ -16,7 +16,6 @@ int my_string_index(char* param_1, char param_2)
 }
 
 char main() 
-{
-    
+{   
     my_string_index("hello", 'l');
 }

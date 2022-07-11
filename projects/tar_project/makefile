@@ -10,13 +10,13 @@ FLAGS = # -Wall -Wextra -Werror
 SRC = main.c \
 	parser.c \
 	tarHandler.c \
-	#debug.c \
+	# debug.c \
               
 
 INCLUDE = main.h  \
 			parser.h \
 			tarHandler.h \
-			#debug.h \
+			# debug.h \
 
 SRCPATH = src
 OBJPATH = obj
