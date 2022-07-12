@@ -150,7 +150,7 @@ int main(int ac, char **av)
             file = av[1];                       // if argument 1 exists, set file to av
     }
     init_my_readline(value);                    // init readline, set value of read sie
-    STORAGE = malloc(sizeof(char) * READLINE_READ_SIZE);
+    STORAGE = malloc(sizeof(char) * READLINE_READ_SIZE + 1);
     if(file != NULL && strcmp(file, "0") != 0) // if file exists, and is not 0 open file and set file descriptor
         fd = open(file, O_RDONLY);
     else                                        // otherwise default to stdin
