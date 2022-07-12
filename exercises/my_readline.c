@@ -144,26 +144,19 @@ int main(int ac, char **av)
     char *line;
     char *file = NULL;
     int fd;
-    //printf("ac = %d\n", ac);
-    if (av[1] && ac <= 2)
+    for (int i = 0; i < ac; i++)
     {
-        file = av[1];                       // if argument 1 exists and theres no more than 2 arguments, set file to av
-        init_my_readline(value);                    // init readline, set value of read sie
-        STORAGE = malloc(sizeof(READLINE_READ_SIZE));
-        if(file != NULL && strcmp(file, "0") != 0) // if file exists, and is not 0 open file and set file descriptor
-            fd = open(file, O_RDONLY);
-        else                                        // otherwise default to stdin
-            fd = 0;
-        while ((line = my_readline(fd)))            // loop through file
-            printf("result = %s\n", line);
-        close(fd);
+        if (av[1])
+            file = av[1];                       // if argument 1 exists, set file to av
     }
-    else
-    {
-        for (int i = 1; i < ac; i++)
-        {
-            printf("%s ", av[i]);
-        }
-    }
+    init_my_readline(value);                    // init readline, set value of read sie
+    STORAGE = malloc(sizeof(char) * READLINE_READ_SIZE);
+    if(file != NULL && strcmp(file, "0") != 0) // if file exists, and is not 0 open file and set file descriptor
+        fd = open(file, O_RDONLY);
+    else                                        // otherwise default to stdin
+        fd = 0;
+    while ((line = my_readline(fd)))            // loop through file
+        printf("result = %s\n", line);
+    close(fd);
     return 0;
 }
