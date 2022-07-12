@@ -120,7 +120,7 @@ char *my_readline(int fd)
         else                                    // if current buffer doesnt exist, create it
             currBuffer = my_strdup(buffer);
 
-        if ((ret = my_strchr(currBuffer, '\n')))
+        if ((ret = my_strchr(currBuffer, '\n')) && fd == 0)
         {
             tmp = malloc(my_strlen(currBuffer) - my_strlen(ret) + 1);
             my_strncpy(tmp, currBuffer, my_strlen(currBuffer) - my_strlen(ret) + 1);
@@ -135,12 +135,12 @@ char *my_readline(int fd)
 void init_my_readline(int value)                // function to initialise readline, free storage and set readline size
 {
     READLINE_READ_SIZE = value;
-    free(STORAGE);
+    STORAGE = malloc(sizeof(char) * READLINE_READ_SIZE + 1);
 }
 
 int main(int ac, char **av)
 {
-    int value = 7;                              // Set this value to set readline size.
+    int value = 512;                              // Set this value to set readline size.
     char *line;
     char *file = NULL;
     int fd;
@@ -150,13 +150,13 @@ int main(int ac, char **av)
             file = av[1];                       // if argument 1 exists, set file to av
     }
     init_my_readline(value);                    // init readline, set value of read sie
-    STORAGE = malloc(sizeof(char) * READLINE_READ_SIZE + 1);
     if(file != NULL && strcmp(file, "0") != 0) // if file exists, and is not 0 open file and set file descriptor
         fd = open(file, O_RDONLY);
     else                                        // otherwise default to stdin
         fd = 0;
     while ((line = my_readline(fd)))            // loop through file
-        printf("result = %s\n", line);
+        printf("%s\n", line);
     close(fd);
+    free(STORAGE);
     return 0;
 }
